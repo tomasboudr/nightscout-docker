@@ -2,6 +2,7 @@ version: '3'
 services:
   cgm-remote-monitor:
     image: "pyrmon/nightscout:latest"
+    container_name: "nightscout"
     environment:
       ## settings according to
       ## https://github.com/nightscout/cgm-remote-monitor/blob/master/README.md#environment
@@ -59,7 +60,9 @@ services:
 
   mongo:
     image: mongo:latest
+    container_name: nightscout_mongo
     volumes:
       - ./mongodb:/data/db
+      - ./mongodump:/dump
     ports:
       - 27017:27017

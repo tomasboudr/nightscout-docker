@@ -18,7 +18,7 @@ I will first explain how to setup Nightscout and later also how to setup Nginx s
 
 ## Setup Nightscout
 
-* I have included the Dockerfile that I used, but it is for refrence only
+* I have included the Dockerfile that I used, but it is for reference only
 * First Clone this repository to your server and go into the folder
 ```sh
 git clone https://github.com/pyrmon/nightscout-docker.git && cd nightscout-docker
@@ -50,3 +50,23 @@ cd nginx
 docker-compose -f docker-compose-nginx.yml up -d
 ```
 * After this you can sign in as admin@example.com with the password changeme
+
+## Backup Nightscout
+* It makes sense to backup your mongo db in case that something crashes. For this reason I have included the backupNightscout.sh file
+* All you need to do is run this command:
+```sh
+./backupNightscout.sh
+```
+* If you are running it for the first time you might need to give the shell file the right to be executed, if required you do this with:
+```sh
+chmod +x backupNightscout.sh
+```
+* If you want this to run this on a specific schedule then I would recommend creating a cronjob for this
+    * A cronjob is a task that your linux machine executes on a specific schedule [Cron](https://en.wikipedia.org/wiki/Cron)
+    * To create a cronjob you need to execute ```crontab -e```
+    * Then an entry like this need to be inserted ```00 2 * * 0-6 /bin/bash /path/to/backupNightscout.sh```
+    * This would execute the backup script every day at 2 am, make sure to put in your path to the backupNightscout.sh
+    * If you want to change the schedule you can lookup how to scheduling works here [Crontab Guru](https://crontab.guru/#0_2_*_*_0-6)
+* The backup will put the backup zips to ~/nightscout-backups/
+* To restore from a new mongodb you need to execute ```docker exec -d nightscout_mongo mongorestore /path/to/unzipped/restore-files```
+* If you need help with a restore from the zip feel free to reach out
